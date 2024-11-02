@@ -1,8 +1,25 @@
-Run the following command in windows power shell to compile, make sure you have nvcc installed in your machine:
-	nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand
+# Monte Carlo Simulation on Barrier Option with CUDA  
 
-Or simply download the executable file to run the latest build 
-	- win11, i7-12700k, rtx4070 - 2024.11.01
+This project leverages CUDA to perform Monte Carlo simulation for Barrier Option pricing, utilizing GPU parallelism to accelerate computation.
 
-Reference:
-	https://www.quantstart.com/articles/Monte-Carlo-Simulations-In-CUDA-Barrier-Option-Pricing/
+## Quick Start
+
+#### Compile with Windows PowerShell
+
+Ensure the NVIDIA CUDA toolkit and `nvcc` compiler are installed. Then compile the project by running:
+
+```powershell
+nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand
+```
+#### Run Precompiled Executable  
+Alternatively, you can download and run the latest build of the executable without compiling.  
+
+#### Tested environment details:
+Operating System: Windows 11  
+CPU: Intel i7-12700k  
+GPU: NVIDIA RTX 3080  
+Build Date: 2024-11-01
+
+
+#### Reference:
+https://www.quantstart.com/articles/Monte-Carlo-Simulations-In-CUDA-Barrier-Option-Pricing/
