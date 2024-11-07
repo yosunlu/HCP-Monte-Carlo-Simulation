@@ -1,6 +1,6 @@
 # Monte Carlo Simulation on Barrier Option with CUDA  
 
-This project leverages CUDA to perform Monte Carlo simulation for Barrier Option pricing, utilizing GPU parallelism to accelerate computation.
+This project leverages CUDA and OpenMP to perform Monte Carlo simulation for Barrier Option pricing, utilizing GPU parallelism to accelerate computation.
 
 ## Quick Start
 
@@ -9,7 +9,7 @@ This project leverages CUDA to perform Monte Carlo simulation for Barrier Option
 Ensure the NVIDIA CUDA toolkit and `nvcc` compiler are installed. Then compile the project by running:
 
 ```powershell
-nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand
+nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand -Xcompiler /openmp
 ```
 #### Run Precompiled Executable  
 Alternatively, you can download and run the latest build of the executable without compiling.  
