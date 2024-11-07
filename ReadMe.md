@@ -18,7 +18,7 @@ Alternatively, you can download and run the latest build of the executable witho
 Operating System: Windows 11  
 CPU: Intel i7-12700k  
 GPU: NVIDIA RTX 3080  
-Build Date: 2024-11-01
+Build Date: 2024-11-07
 
 #### Test Output Result
 ![image](https://github.com/user-attachments/assets/d2f06fb0-9983-41d1-b46d-ab03033eb041)
