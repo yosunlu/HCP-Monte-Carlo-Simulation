@@ -3,11 +3,11 @@
 #include <time.h>
 #include <math.h>
 #include <iostream>
-#include <time.h>
 #include <cuda_runtime.h>
 #include "kernel.h"
 #include "dev_array.h"
 #include <curand.h>
+#include <omp.h> // Include OpenMP header
 
 using namespace std;
 
@@ -49,7 +49,7 @@ int main() {
         // compute the payoff average
         double temp_sum=0.0;
         for(size_t i=0; i<N_PATHS; i++) {
-            temp_sum +=s[i];
+            temp_sum += s[i];
         }
         temp_sum/=N_PATHS;
         double t4=double(clock())/CLOCKS_PER_SEC;
@@ -57,14 +57,14 @@ int main() {
         // init variables for CPU Monte Carlo
         vector<float> normals(N_NORMALS);
         d_normals.get(&normals[0],N_NORMALS);
-        double sum=0.0;
-        float s_curr=0.0;
 
         // CPU Monte Carlo Simulation
+        double sum=0.0;
+
         for (size_t i=0; i<N_PATHS; i++) {
             int n_idx = i*N_STEPS;
 
-            s_curr=S0;
+            float s_curr=S0;
             int n=0;
 
             do {
@@ -81,6 +81,31 @@ int main() {
         sum/=N_PATHS;
         double t5=double(clock())/CLOCKS_PER_SEC;
 
+        // OpenMP CPU Monte Carlo Simulation
+        double sum_openmp = 0.0;
+        double t6 = double(clock())/CLOCKS_PER_SEC;
+
+        #pragma omp parallel for reduction(+:sum_openmp)
+        for (int i=0; i<N_PATHS; i++) {
+            int n_idx = i*N_STEPS;
+
+            float s_curr=S0;
+            int n=0;
+
+            do {
+                s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
+                n_idx ++;
+                n++;
+            }
+            while (n<N_STEPS && s_curr>B);
+            
+            double payoff = (s_curr>K ? s_curr-K : 0.0);
+            sum_openmp += exp(-r*T) * payoff;
+        }
+
+        sum_openmp/=N_PATHS;
+        double t7=double(clock())/CLOCKS_PER_SEC;
+
         cout<<"****************** INFO ******************\n";
         cout<<"Number of Paths: " << N_PATHS << "\n";
         cout<<"Underlying Initial Price: " << S0 << "\n";
@@ -93,9 +118,11 @@ int main() {
         cout<<"****************** PRICE ******************\n";
         cout<<"Option Price (GPU): " << temp_sum << "\n";
         cout<<"Option Price (CPU): " << sum << "\n";
+        cout<<"Option Price (CPU with OpenMP): " << sum_openmp << "\n";
         cout<<"******************* TIME *****************\n";
         cout<<"GPU Monte Carlo Computation: " << (t4-t2)*1e3 << " ms\n";
         cout<<"CPU Monte Carlo Computation: " << (t5-t4)*1e3 << " ms\n";
+        cout<<"CPU with OpenMP Monte Carlo Computation: " << (t7-t6)*1e3 << " ms\n";
         cout<<"******************* END *****************\n";
 
         // destroy generator
