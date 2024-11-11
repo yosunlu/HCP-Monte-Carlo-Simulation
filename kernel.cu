@@ -3,7 +3,7 @@
 __global__ void mc_kernel(
     float * d_s,
     float T,
-    float K,
+    float K, 
     float B,
     float S0,
     float sigma,
@@ -23,8 +23,9 @@ __global__ void mc_kernel(
         if (s_idx<N_PATHS) {
             int n=0;
             do {
+                //  Euler discretisation
                 s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*d_normals[n_idx];
-                n_idx ++;
+                n_idx++;
                 n++;
             }
             while (n<N_STEPS && s_curr>B);

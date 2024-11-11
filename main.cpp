@@ -14,27 +14,32 @@ using namespace std;
 int main() {
     try {
         // declare variables and constants
+        // dimensional constants 
         const size_t N_PATHS = 100000;
         const size_t N_STEPS = 365;
         const size_t N_NORMALS = N_PATHS*N_STEPS;
+
+        // market parameters 
         const float T = 1.0f;
-        const float K = 100.0f;
-        const float B = 95.0f;
-        const float S0 = 100.0f;
-        const float sigma = 0.2f;
-        const float mu = 0.1f;
-        const float r = 0.05f;
+        const float K = 100.0f; // strike price
+        const float B = 95.0f; // barrier price
+        const float S0 = 100.0f; // market price 
+        const float sigma = 0.2f; // expectec volatility per year
+        const float mu = 0.1f; // expected return per year
+        const float r = 0.05f; // 
+
+        // derived variables 
         float dt = float(T)/float(N_STEPS);
         float sqrdt = sqrt(dt);
 
         // generate arrays
         vector<float> s(N_PATHS);
         dev_array<float> d_s(N_PATHS);
-        dev_array<float> d_normals(N_NORMALS);
+        dev_array<float> d_normals(N_NORMALS); // array to store normally distributed random numbers
         
         // generate random numbers
         curandGenerator_t curandGenerator;
-        curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32);
+        curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm 
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL) ;
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
         double t2=double(clock())/CLOCKS_PER_SEC;
