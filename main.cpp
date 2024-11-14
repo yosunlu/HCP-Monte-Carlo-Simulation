@@ -15,7 +15,6 @@ int main() {
     try {
         // declare variables and constants
         // dimensional constants 
-        cout << "begin\n" << endl;
         const size_t N_PATHS = 100000;
         const size_t N_STEPS = 365;
         const size_t N_NORMALS = N_PATHS*N_STEPS;
@@ -44,7 +43,7 @@ int main() {
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL) ;
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
         double t2=double(clock())/CLOCKS_PER_SEC;
-
+        cout << "debug\n" << endl;
         // call the kernel
         mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
         cudaDeviceSynchronize();
