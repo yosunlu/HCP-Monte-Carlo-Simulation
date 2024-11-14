@@ -114,6 +114,7 @@ int main() {
 
         cout<<"****************** INFO ******************\n";
         cout<<"Number of Paths: " << N_PATHS << "\n";
+        cout<<"Number of Steps: " << N_STEPS << "\n";
         cout<<"Underlying Initial Price: " << S0 << "\n";
         cout<<"Strike: " << K << "\n";
         cout<<"Barrier: " << B << "\n";
