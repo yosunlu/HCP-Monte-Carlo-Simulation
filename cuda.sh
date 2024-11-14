@@ -2,7 +2,7 @@
 #SBATCH --job-name=task1
 #SBATCH -p instruction
 #SBATCH --ntasks=1 --cpus-per-task=2
-#SBATCH --time=0-00:30:00
+#SBATCH --time=0-00:20:00
 #SBATCH --output="./output/cuda.out"
 #SBATCH --error="./output/cuda.err"
 #SBATCH --gres=gpu:1
