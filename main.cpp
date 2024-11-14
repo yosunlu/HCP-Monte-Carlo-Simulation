@@ -33,6 +33,7 @@ int main() {
         float sqrdt = sqrt(dt);
 
         // generate arrays
+        cout << "debug\n" << endl;
         vector<float> s(N_PATHS);
         dev_array<float> d_s(N_PATHS);
         dev_array<float> d_normals(N_NORMALS); // array to store normally distributed random numbers
@@ -43,7 +44,7 @@ int main() {
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL) ;
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
         double t2=double(clock())/CLOCKS_PER_SEC;
-        cout << "debug\n" << endl;
+        
         // call the kernel
         mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
         cudaDeviceSynchronize();
