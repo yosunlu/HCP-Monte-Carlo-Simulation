@@ -61,56 +61,56 @@ int main() {
         double t4=double(clock())/CLOCKS_PER_SEC;
 
         // init variables for CPU Monte Carlo
-        vector<float> normals(N_NORMALS);
-        d_normals.get(&normals[0],N_NORMALS);
+        // vector<float> normals(N_NORMALS);
+        // d_normals.get(&normals[0],N_NORMALS);
 
-        // CPU Monte Carlo Simulation
-        double sum=0.0;
+        // // CPU Monte Carlo Simulation
+        // double sum=0.0;
 
-        for (size_t i=0; i<N_PATHS; i++) {
-            int n_idx = i*N_STEPS;
+        // for (size_t i=0; i<N_PATHS; i++) {
+        //     int n_idx = i*N_STEPS;
 
-            float s_curr=S0;
-            int n=0;
+        //     float s_curr=S0;
+        //     int n=0;
 
-            do {
-                s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
-                n_idx ++;
-                n++;
-            }
-            while (n<N_STEPS && s_curr>B);
+        //     do {
+        //         s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
+        //         n_idx ++;
+        //         n++;
+        //     }
+        //     while (n<N_STEPS && s_curr>B);
             
-            double payoff = (s_curr>K ? s_curr-K : 0.0);
-            sum += exp(-r*T) * payoff;
-        }
+        //     double payoff = (s_curr>K ? s_curr-K : 0.0);
+        //     sum += exp(-r*T) * payoff;
+        // }
 
-        sum/=N_PATHS;
-        double t5=double(clock())/CLOCKS_PER_SEC;
+        // sum/=N_PATHS;
+        // double t5=double(clock())/CLOCKS_PER_SEC;
 
-        // OpenMP CPU Monte Carlo Simulation
-        double sum_openmp = 0.0;
-        double t6 = double(clock())/CLOCKS_PER_SEC;
+        // // OpenMP CPU Monte Carlo Simulation
+        // double sum_openmp = 0.0;
+        // double t6 = double(clock())/CLOCKS_PER_SEC;
 
-        #pragma omp parallel for reduction(+:sum_openmp)
-        for (int i=0; i<N_PATHS; i++) {
-            int n_idx = i*N_STEPS;
+        // #pragma omp parallel for reduction(+:sum_openmp)
+        // for (int i=0; i<N_PATHS; i++) {
+        //     int n_idx = i*N_STEPS;
 
-            float s_curr=S0;
-            int n=0;
+        //     float s_curr=S0;
+        //     int n=0;
 
-            do {
-                s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
-                n_idx ++;
-                n++;
-            }
-            while (n<N_STEPS && s_curr>B);
+        //     do {
+        //         s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
+        //         n_idx ++;
+        //         n++;
+        //     }
+        //     while (n<N_STEPS && s_curr>B);
             
-            double payoff = (s_curr>K ? s_curr-K : 0.0);
-            sum_openmp += exp(-r*T) * payoff;
-        }
+        //     double payoff = (s_curr>K ? s_curr-K : 0.0);
+        //     sum_openmp += exp(-r*T) * payoff;
+        // }
 
-        sum_openmp/=N_PATHS;
-        double t7=double(clock())/CLOCKS_PER_SEC;
+        // sum_openmp/=N_PATHS;
+        // double t7=double(clock())/CLOCKS_PER_SEC;
 
         cout<<"****************** INFO ******************\n";
         cout<<"Number of Paths: " << N_PATHS << "\n";
@@ -124,12 +124,12 @@ int main() {
         cout<<"Volatility: " << sigma << "%\n";
         cout<<"****************** PRICE ******************\n";
         cout<<"Option Price (GPU): " << temp_sum << "\n";
-        cout<<"Option Price (CPU): " << sum << "\n";
-        cout<<"Option Price (CPU with OpenMP): " << sum_openmp << "\n";
+        // cout<<"Option Price (CPU): " << sum << "\n";
+        // cout<<"Option Price (CPU with OpenMP): " << sum_openmp << "\n";
         cout<<"******************* TIME *****************\n";
         cout<<"GPU Monte Carlo Computation: " << (t4-t2)*1e3 << " ms\n";
-        cout<<"CPU Monte Carlo Computation: " << (t5-t4)*1e3 << " ms\n";
-        cout<<"CPU with OpenMP Monte Carlo Computation: " << (t7-t6)*1e3 << " ms\n";
+        // cout<<"CPU Monte Carlo Computation: " << (t5-t4)*1e3 << " ms\n";
+        // cout<<"CPU with OpenMP Monte Carlo Computation: " << (t7-t6)*1e3 << " ms\n";
         cout<<"******************* END *****************\n";
 
         // destroy generator
