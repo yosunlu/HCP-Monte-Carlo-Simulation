@@ -3,7 +3,7 @@ push:
 	git commit -m "update script"
 	git push
 
-reset:
+pull:
 	git reset --hard HEAD
 	git pull
 
