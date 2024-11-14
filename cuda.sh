@@ -12,5 +12,5 @@ mkdir -p output
 module load nvidia/cuda/11.8.0
 module load gcc/9.4.0
 
-nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand -Xcompiler
-./kernael.cu >> ./output/cuda.out
+nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand -Xcompiler -fopenmp
+./kernel.cu >> ./output/cuda.out
