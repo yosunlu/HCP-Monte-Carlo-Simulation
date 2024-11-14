@@ -4,5 +4,6 @@ push:
 	git push
 
 cuda:
+	chmod +x kernel.cu
 	chmod +x cuda.sh
 	./cuda.sh
