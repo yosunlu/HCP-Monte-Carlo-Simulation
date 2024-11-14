@@ -15,8 +15,8 @@ int main() {
     try {
         // declare variables and constants
         // dimensional constants 
-        const size_t N_PATHS = 10000;
-        const size_t N_STEPS = 100;
+        const size_t N_PATHS = 100000;
+        const size_t N_STEPS = 365;
         const size_t N_NORMALS = N_PATHS*N_STEPS;
 
         // market parameters 

@@ -10,5 +10,5 @@ reset:
 cuda:
 	chmod +x kernel.cu
 	chmod +x cuda.sh
-	./cuda.sh
+	sbatch ./cuda.sh
 
