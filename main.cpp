@@ -24,7 +24,7 @@ int main() {
         const float K = 100.0f; // strike price
         const float B = 95.0f; // barrier price
         const float S0 = 100.0f; // market price 
-        const float sigma = 0.2f; // expectec volatility per year
+        const float sigma = 0.2f; // expected volatility per year
         const float mu = 0.1f; // expected return per year
         const float r = 0.05f; // 
 
