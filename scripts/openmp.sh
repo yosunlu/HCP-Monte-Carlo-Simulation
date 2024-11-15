@@ -10,5 +10,5 @@
 # Add the output folder if not already exists
 mkdir -p output
 
-g++ ./openmp/main.cpp -Wall -O3 -std=c++17 -o barrier_option_pricing_openmp -fopenmp
+nvcc -o barrier_option_pricing_openmp ./cuda/openmp.cpp -lcurand -Xcompiler -fopenmp
 ./barrier_option_pricing_openmp
