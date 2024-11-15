@@ -33,7 +33,6 @@ int main() {
         float sqrdt = sqrt(dt);
 
         // generate arrays
-        cout << "debug\n" << endl;
         vector<float> s(N_PATHS);
         dev_array<float> d_s(N_PATHS);
         dev_array<float> d_normals(N_NORMALS); // array to store normally distributed random numbers

@@ -8,5 +8,9 @@ pull:
 	git pull
 
 cuda:
-	chmod +x cuda.sh
-	sbatch ./cuda.sh
+	chmod +x ./scripts/cuda.sh
+	sbatch ./scripts/cuda.sh
+
+openmp:
+	chmod +x ./scripts/openmp.sh
+	sbatch ./scripts/openmp.sh

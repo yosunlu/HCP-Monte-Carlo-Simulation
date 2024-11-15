@@ -10,9 +10,5 @@
 # Add the output folder if not already exists
 mkdir -p output
 
-# Load the modules 
-module load nvidia/cuda/11.8.0
-module load gcc/9.4.0
-
-nvcc -o barrier_option_pricing main.cpp kernel.cu -lcurand -Xcompiler -fopenmp
-./barrier_option_pricing 
+g++ ./openmp/main.cpp -Wall -O3 -std=c++17 -o barrier_option_pricing_openmp -fopenmp
+./barrier_option_pricing_openmp
