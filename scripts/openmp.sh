@@ -12,6 +12,7 @@ mkdir -p output
 
 # Load the modules 
 module load nvidia/cuda/11.8.0
+module load gcc/9.4.0
 
-nvcc -o barrier_option_pricing_openmp ./openmp/main.cpp -lcurand -Xcompiler -fopenmp
+nvcc -o barrier_option_pricing_openmp ./openmp/openmp.cpp -lcurand -Xcompiler -fopenmp
 ./barrier_option_pricing_openmp

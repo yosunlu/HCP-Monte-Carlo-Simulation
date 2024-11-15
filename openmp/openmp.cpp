@@ -40,6 +40,7 @@ int main() {
         // init variables for CPU Monte Carlo
         vector<float> normals(N_NORMALS);
         d_normals.get(&normals[0],N_NORMALS);
+        dev_array<float> d_normals(N_NORMALS);
 
         // CPU Monte Carlo Simulation
         // double sum=0.0;
