@@ -73,7 +73,7 @@ int main() {
         //     int n=0;
 
         //     do {
-        //         s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
+                // s_curr = s_curr + mu*s_curr*dt + sigma*s_curr*normals[n_idx];
         //         n_idx ++;
         //         n++;
         //     }

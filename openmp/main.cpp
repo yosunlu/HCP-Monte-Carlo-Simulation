@@ -3,6 +3,8 @@
 #include <time.h>
 #include <math.h>
 #include <iostream>
+#include <cuda_runtime.h>
+#include <curand.h>
 #include <omp.h> // Include OpenMP header
 
 using namespace std;
@@ -28,9 +30,16 @@ int main() {
         float dt = float(T)/float(N_STEPS);
         float sqrdt = sqrt(dt);
 
+        // generate random numbers
+        curandGenerator_t curandGenerator;
+        curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm 
+        curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL) ;
+        curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
+        double t2=double(clock())/CLOCKS_PER_SEC;
+
         // init variables for CPU Monte Carlo
-        // vector<float> normals(N_NORMALS);
-        // d_normals.get(&normals[0],N_NORMALS);
+        vector<float> normals(N_NORMALS);
+        d_normals.get(&normals[0],N_NORMALS);
 
         // CPU Monte Carlo Simulation
         // double sum=0.0;
