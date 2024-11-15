@@ -29,6 +29,10 @@ int main() {
         // derived variables 
         float dt = float(T)/float(N_STEPS);
         float sqrdt = sqrt(dt);
+        
+        // use gpu to generate random numbers
+        // generate array to store normally distributed random numbers
+        dev_array<float> d_normals(N_NORMALS); // array 
 
         // generate random numbers
         curandGenerator_t curandGenerator;
@@ -37,11 +41,12 @@ int main() {
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
         double t2=double(clock())/CLOCKS_PER_SEC;
 
-        // init variables for CPU Monte Carlo
+       // init variables for CPU Monte Carlo
         vector<float> normals(N_NORMALS);
         d_normals.get(&normals[0],N_NORMALS);
         dev_array<float> d_normals(N_NORMALS);
 
+ 
         // CPU Monte Carlo Simulation
         // double sum=0.0;
 
