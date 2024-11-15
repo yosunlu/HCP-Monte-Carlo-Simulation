@@ -3,10 +3,6 @@
 #include <time.h>
 #include <math.h>
 #include <iostream>
-#include <cuda_runtime.h>
-#include "kernel.h"
-#include "dev_array.h"
-#include <curand.h>
 #include <omp.h> // Include OpenMP header
 
 using namespace std;
