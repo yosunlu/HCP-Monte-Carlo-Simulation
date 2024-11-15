@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cuda_runtime.h>
 #include <curand.h>
+#include "dev_array.h"
 #include <omp.h> // Include OpenMP header
 
 using namespace std;
