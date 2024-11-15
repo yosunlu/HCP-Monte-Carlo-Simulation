@@ -1,3 +1,5 @@
+.PHONY: openmp cuda
+
 push:
 	git add .
 	git commit -m "$(MSG)"
