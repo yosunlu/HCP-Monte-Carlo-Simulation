@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=cuda
+#SBATCH --job-name=openmp
 #SBATCH -p instruction
 #SBATCH --ntasks=1 --cpus-per-task=2
 #SBATCH --time=0-00:20:00
