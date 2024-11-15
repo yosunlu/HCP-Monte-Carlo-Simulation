@@ -23,5 +23,7 @@ Build Date: 2024-11-07
 #### Test Output Result
 ![image](https://github.com/user-attachments/assets/d2f06fb0-9983-41d1-b46d-ab03033eb041)
 
+We observed that when path = 5*10^6 and step = 730, it took too much time for cpu to execute the program while things went much easier with gpu computing.
+
 #### Reference:
 https://www.quantstart.com/articles/Monte-Carlo-Simulations-In-CUDA-Barrier-Option-Pricing/
