@@ -32,7 +32,7 @@ int main()
 
         // derived variables
         float dt = float(T) / float(N_STEPS);
-        float sqrdt = sqrt(dt);
+        float sqrdt = sqrt(dt); // used for generating random numbers
 
         // generate arrays
         vector<float> s(N_PATHS); // host array
@@ -42,8 +42,10 @@ int main()
         // generate random numbers
         curandGenerator_t curandGenerator;
         curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm
-        curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL);
-        curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
+        curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL); // seed for the generator
+        curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt); //  generate normally distributed random numbers, using Brownian motion
+
+        // start the clock 
         double t2 = double(clock()) / CLOCKS_PER_SEC;
 
         // call the kernel
