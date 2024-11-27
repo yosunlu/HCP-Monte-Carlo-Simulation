@@ -7,7 +7,10 @@
 #include "kernel.h"
 #include "dev_array.h"
 #include <curand.h>
+#include <cstdlib>
 #include <omp.h> // Include OpenMP header
+
+
 
 using namespace std;
 
@@ -45,7 +48,6 @@ int main()
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL); // seed for the generator
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt); //  generate normally distributed random numbers, using Brownian motion
 
-        
         // Set up CUDA events for timing
         cudaEvent_t start, stop;
         cudaEventCreate(&start);
