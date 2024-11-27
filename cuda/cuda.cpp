@@ -69,6 +69,7 @@ int main()
         // Copy results from device to host
         d_s.get(&s[0], N_PATHS);
 
+
         // compute the payoff average
         double temp_sum = 0.0;
         for (size_t i = 0; i < N_PATHS; i++)
