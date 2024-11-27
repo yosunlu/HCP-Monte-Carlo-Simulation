@@ -28,7 +28,7 @@ int main()
         const float S0 = 100.0f;  // market price
         const float sigma = 0.2f; // expected volatility per year
         const float mu = 0.1f;    // expected return per year
-        const float r = 0.05f;    //
+        const float r = 0.05f;    // risk-free rate
 
         // derived variables
         float dt = float(T) / float(N_STEPS);
