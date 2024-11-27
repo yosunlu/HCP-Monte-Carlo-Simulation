@@ -72,6 +72,7 @@ int main()
             return -1;
         }
 
+
         // compute the payoff average
         double temp_sum = 0.0;
         for (size_t i = 0; i < N_PATHS; i++)
