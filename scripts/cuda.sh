@@ -15,6 +15,5 @@ module load nvidia/cuda/11.8.0
 module load gcc/9.4.0
 nvidia-smi
 
-
 nvcc -o barrier_option_pricing ./cuda/cuda.cpp ./cuda/kernel.cu -lcurand -Xcompiler -fopenmp
 ./barrier_option_pricing 

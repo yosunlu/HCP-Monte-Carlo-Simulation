@@ -65,13 +65,8 @@ int main()
         float ms;
         cudaEventElapsedTime(&ms, start, stop);
 
-        // Copy results from device to host using cudaMemcpy
-        cudaError_t err = cudaMemcpy(&s[0], d_s, N_PATHS * sizeof(float), cudaMemcpyDeviceToHost);
-        if (err != cudaSuccess) {
-            std::cerr << "cudaMemcpy failed: " << cudaGetErrorString(err) << std::endl;
-            return -1;
-        }
-
+        // Copy results from device to host
+        d_s.get(&s[0], N_PATHS);
 
         // compute the payoff average
         double temp_sum = 0.0;
