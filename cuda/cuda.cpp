@@ -45,15 +45,32 @@ int main()
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL); // seed for the generator
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt); //  generate normally distributed random numbers, using Brownian motion
 
+        
+        // Set up CUDA events for timing
+        cudaEvent_t start, stop;
+        cudaEventCreate(&start);
+        cudaEventCreate(&stop);
+
         // start the clock 
-        double t2 = double(clock()) / CLOCKS_PER_SEC;
+        cudaEventRecord(start);
 
         // call the kernel
         mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
-        cudaDeviceSynchronize();
 
-        // copy results from device to host
-        d_s.get(&s[0], N_PATHS);
+        // End the clock
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+
+        // Get the elapsed time in milliseconds
+        float ms;
+        cudaEventElapsedTime(&ms, start, stop);
+
+        // Copy results from device to host using cudaMemcpy
+        cudaError_t err = cudaMemcpy(&s[0], d_s, N_PATHS * sizeof(float), cudaMemcpyDeviceToHost);
+        if (err != cudaSuccess) {
+            std::cerr << "cudaMemcpy failed: " << cudaGetErrorString(err) << std::endl;
+            return -1;
+        }
 
         // compute the payoff average
         double temp_sum = 0.0;
@@ -64,8 +81,6 @@ int main()
         temp_sum /= N_PATHS;
 
         
-        
-
         cout << "****************** INFO ******************\n";
         cout << "Number of Paths: " << N_PATHS << "\n";
         cout << "Number of Steps: " << N_STEPS << "\n";
@@ -79,7 +94,7 @@ int main()
         cout << "****************** PRICE *****************\n";
         cout << "Option Price (GPU): " << temp_sum << "\n";
         cout << "******************* TIME *****************\n";
-        cout << "GPU Monte Carlo Computation: " << (t4 - t2) * 1e3 << " ms\n";
+        cout << "GPU Monte Carlo Computation: " << ms << " ms\n";
         cout << "******************* END *****************\n";
 
         // destroy generator
