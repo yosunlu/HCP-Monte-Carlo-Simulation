@@ -52,6 +52,8 @@ int main()
         mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
         cudaDeviceSynchronize();
 
+        double t4 = double(clock()) / CLOCKS_PER_SEC;
+        
         // copy results from device to host
         d_s.get(&s[0], N_PATHS);
 
@@ -62,7 +64,9 @@ int main()
             temp_sum += s[i];
         }
         temp_sum /= N_PATHS;
-        double t4 = double(clock()) / CLOCKS_PER_SEC;
+
+        // End the clock
+        
 
         cout << "****************** INFO ******************\n";
         cout << "Number of Paths: " << N_PATHS << "\n";
