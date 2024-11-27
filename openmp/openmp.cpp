@@ -42,7 +42,7 @@ int main()
         curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL);
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
-        double t2 = double(clock()) / CLOCKS_PER_SEC;
+
 
         // init variables for CPU Monte Carlo
         vector<float> normals(N_NORMALS);
@@ -107,8 +107,8 @@ int main()
         cout << "Barrier: " << B << "\n";
         cout << "Time to Maturity: " << T << " years\n";
         cout << "Risk-free Interest Rate: " << r << "%\n";
-        cout << "Annual drift: " << mu << "%\n";
-        cout << "Volatility: " << sigma << "%\n";
+        cout << "Annual drift: " << mu * 100 << "%\n";
+        cout << "Volatility: " << sigma * 100 << "%\n";
         cout << "****************** PRICE ******************\n";
         // cout<<"Option Price (CPU): " << sum << "\n";
         cout << "Option Price (CPU with OpenMP): " << sum_openmp << "\n";

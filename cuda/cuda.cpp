@@ -11,7 +11,6 @@
 #include <omp.h> // Include OpenMP header
 
 
-
 using namespace std;
 
 int main()
@@ -87,8 +86,8 @@ int main()
         cout << "Barrier: " << B << "\n";
         cout << "Time to Maturity: " << T << " years\n";
         cout << "Risk-free Interest Rate: " << r << "%\n";
-        cout << "Annual drift: " << mu << "%\n";
-        cout << "Volatility: " << sigma << "%\n";
+        cout << "Annual drift: " << mu * 100 << "%\n";
+        cout << "Volatility: " << sigma * 100 << "%\n";
         cout << "****************** PRICE *****************\n";
         cout << "Option Price (GPU): " << temp_sum << "\n";
         cout << "******************* TIME *****************\n";
