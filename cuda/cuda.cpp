@@ -53,7 +53,13 @@ int main()
         cudaDeviceSynchronize();
 
         // copy results from device to host
-        d_s.get(&s[0], N_PATHS);
+        cudaError_t err = cudaMemcpy(&s[0], d_s, N_PATHS * sizeof(float), cudaMemcpyDeviceToHost);
+        if (err != cudaSuccess) {
+            std::cerr << "cudaMemcpy failed: " << cudaGetErrorString(err) << std::endl;
+            return -1;
+        }
+
+
 
         // End the clock
         double t4 = double(clock()) / CLOCKS_PER_SEC;
