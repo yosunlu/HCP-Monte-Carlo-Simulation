@@ -18,7 +18,7 @@ int main()
     try
     {
 
-cudaDeviceProp prop;
+    cudaDeviceProp prop;
         cudaGetDeviceProperties(&prop, 0);
         std::cout << "Shared Memory Per Block: " << prop.sharedMemPerBlock << " bytes" << std::endl;
         std::cout << "Shared Memory Per SM: " << prop.sharedMemPerMultiprocessor << " bytes" << std::endl;
