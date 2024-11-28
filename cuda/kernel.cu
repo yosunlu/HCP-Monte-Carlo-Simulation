@@ -92,7 +92,6 @@ __global__ void mc_kernel_shared(
     for (size_t i = 0; i < N_STEPS; ++i) {
         shared_mem[tid * N_STEPS + i] = d_normals[base_idx + i];
     }
-    __syncthreads(); // Ensure all threads finish copying
 
     if (s_idx < N_PATHS)
     {
