@@ -92,6 +92,7 @@ __global__ void mc_kernel_shared(
     for (size_t i = 0; i < N_STEPS; ++i) {
         shared_mem[tid * N_STEPS + i] = d_normals[base_idx + i];
     }
+    __syncthreads(); // Ensure all threads finish copying
 
     if (s_idx < N_PATHS)
     {
@@ -127,7 +128,7 @@ void mc_dao_call_shared(
     unsigned N_STEPS,
     unsigned N_PATHS)
 {
-    const unsigned BLOCK_SIZE = 32;
+    const unsigned BLOCK_SIZE = 16;
     const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
     mc_kernel_shared<<<GRID_SIZE, BLOCK_SIZE, BLOCK_SIZE * N_STEPS * sizeof(float)>>>(
         d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
