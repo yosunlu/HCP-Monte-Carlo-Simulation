@@ -3,8 +3,8 @@
 #SBATCH -p instruction
 #SBATCH --ntasks=1 --cpus-per-task=2
 #SBATCH --time=0-00:20:00
-#SBATCH --output="./cuda.out"
-#SBATCH --error="./cuda.err"
+#SBATCH --output="./output/cuda.out"
+#SBATCH --error="./output/cuda.err"
 #SBATCH --gres=gpu:1
 
 # Add the output folder if not already exists

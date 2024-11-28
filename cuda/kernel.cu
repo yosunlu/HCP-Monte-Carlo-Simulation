@@ -36,6 +36,28 @@ __global__ void mc_kernel(
     }
 }
 
+void mc_dao_call(
+    float *d_s,
+    float T,
+    float K,
+    float B,
+    float S0,
+    float sigma,
+    float mu,
+    float r,
+    float dt,
+    float *d_normals,
+    unsigned N_STEPS,
+    unsigned N_PATHS)
+{
+    const unsigned BLOCK_SIZE = 1024;
+    const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
+    mc_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(
+        d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
+}
+
+
+
 __global__ void mc_kernel_shared(
     float *d_s,  // device storage, data of which will be copied back to host
     float T,
@@ -70,26 +92,6 @@ __global__ void mc_kernel_shared(
         __syncthreads();
         d_s[s_idx] = exp(-r * T) * payoff;
     }
-}
-
-void mc_dao_call(
-    float *d_s,
-    float T,
-    float K,
-    float B,
-    float S0,
-    float sigma,
-    float mu,
-    float r,
-    float dt,
-    float *d_normals,
-    unsigned N_STEPS,
-    unsigned N_PATHS)
-{
-    const unsigned BLOCK_SIZE = 1024;
-    const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
-    mc_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(
-        d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
 }
 
 void mc_dao_call_shared(

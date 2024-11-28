@@ -17,6 +17,12 @@ int main()
 {
     try
     {
+
+cudaDeviceProp prop;
+        cudaGetDeviceProperties(&prop, 0);
+        std::cout << "Shared Memory Per Block: " << prop.sharedMemPerBlock << " bytes" << std::endl;
+        std::cout << "Shared Memory Per SM: " << prop.sharedMemPerMultiprocessor << " bytes" << std::endl;
+
         // declare variables and constants
         // dimensional constants
         const size_t N_PATHS = 5000000;
@@ -85,7 +91,7 @@ int main()
         cout << "Strike: " << K << "\n";
         cout << "Barrier: " << B << "\n";
         cout << "Time to Maturity: " << T << " years\n";
-        cout << "Risk-free Interest Rate: " << r << "%\n";
+        cout << "Risk-free Interest Rate: " << r * 100 << "%\n";
         cout << "Annual drift: " << mu * 100 << "%\n";
         cout << "Volatility: " << sigma * 100 << "%\n";
         cout << "****************** PRICE *****************\n";
