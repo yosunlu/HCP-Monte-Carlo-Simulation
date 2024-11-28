@@ -132,4 +132,4 @@ void mc_dao_call_shared(
     const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
     mc_kernel_shared<<<GRID_SIZE, BLOCK_SIZE, BLOCK_SIZE * N_STEPS * sizeof(float)>>>(
         d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
-}
+} 
