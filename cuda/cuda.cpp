@@ -56,7 +56,7 @@ int main()
         cudaEventRecord(start);
 
         // call the kernel
-        mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
+        mc_dao_call_shared(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
 
         // End the clock
         cudaEventRecord(stop);
@@ -68,7 +68,6 @@ int main()
 
         // Copy results from device to host
         d_s.get(&s[0], N_PATHS);
-
 
         // compute the payoff average
         double temp_sum = 0.0;
