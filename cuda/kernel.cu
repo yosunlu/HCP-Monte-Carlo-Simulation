@@ -56,12 +56,11 @@ void mc_dao_call(
     unsigned N_STEPS,
     unsigned N_PATHS)
 {
-    const unsigned BLOCK_SIZE = 1024;
+    const unsigned BLOCK_SIZE = 32;
     const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
     mc_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(
         d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
 }
-
 
 
 __global__ void mc_kernel_shared(
@@ -111,7 +110,6 @@ __global__ void mc_kernel_shared(
 
         // Compute payoff
         float payoff = (s_curr > K ? s_curr - K : 0.0);
-        __syncthreads();
         d_s[s_idx] = exp(-r * T) * payoff;
     }
 }
