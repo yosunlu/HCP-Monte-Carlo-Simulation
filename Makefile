@@ -1,4 +1,4 @@
-.PHONY: openmp cuda
+.PHONY: cuda openmp sequential
 
 push:
 	git add .
@@ -16,3 +16,7 @@ cuda:
 openmp:
 	chmod +x ./scripts/openmp.sh
 	sbatch ./scripts/openmp.sh
+
+sequential:
+	chmod +x ./scripts/sequential.sh
+	sbatch ./scripts/sequential.sh
