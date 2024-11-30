@@ -15,7 +15,7 @@ int main()
     {
         // declare variables and constants
         // dimensional constants
-        const size_t N_PATHS = 1000000;
+        const size_t N_PATHS = 5000000;
         const size_t N_STEPS = 365;
         const size_t N_NORMALS = N_PATHS * N_STEPS;
 
@@ -87,7 +87,7 @@ int main()
         cout << "****************** PRICE ******************\n";
         cout << "Option Price (CPU): " << sum << "\n";
         cout << "******************* TIME *****************\n";
-        cout << "CPU Monte Carlo Computation: " << (start - end) * 1e3 << " ms\n";
+        cout << "CPU Monte Carlo Computation: " << (end - start) * 1e3 << " ms\n";
         cout << "******************* END *****************\n";
 
         curandDestroyGenerator(curandGenerator);
