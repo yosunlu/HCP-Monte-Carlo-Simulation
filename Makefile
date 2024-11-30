@@ -24,4 +24,4 @@ sequential:
 clean:
 	rm barrier_option_pricing_seq
 	rm barrier_option_pricing_openmp
-	barrier_option_pricing_cuda
+	rm barrier_option_pricing_cuda

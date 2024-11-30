@@ -3,6 +3,7 @@
 #include <time.h>
 #include <math.h>
 #include <iostream>
+#include <random>
 #include <cuda_runtime.h>
 #include <curand.h>
 #include "dev_array.h"
@@ -32,26 +33,40 @@ int main()
         float dt = float(T) / float(N_STEPS); // amount of time elapsing at each step
         float sqrdt = sqrt(dt);
 
-        // use GPU to generate random numbers
-        // generate array to store normally distributed random numbers
-        dev_array<float> d_normals(N_NORMALS); // array
+        // GPU: Generate random numbers and measure time (including transfer)
+        double gpu_start = double(clock()) / CLOCKS_PER_SEC;
 
-        // generate random numbers
+        dev_array<float> d_normals(N_NORMALS); // Array on GPU
+
         curandGenerator_t curandGenerator;
         curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL);
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
 
-        // init variables for CPU Monte Carlo
+        // Copy the random numbers from GPU to CPU
         vector<float> normals(N_NORMALS);
-
-        // copy the random number generated on GPU back to CPU
         d_normals.get(&normals[0], N_NORMALS);
+
+        double gpu_end = double(clock()) / CLOCKS_PER_SEC;
+
+        // CPU: Generate random numbers
+        double cpu_start = double(clock()) / CLOCKS_PER_SEC;
+
+        vector<float> cpu_normals(N_NORMALS);
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::normal_distribution<float> dist(0.0f, sqrdt);
+
+        for (size_t i = 0; i < N_NORMALS; i++)
+        {
+            cpu_normals[i] = dist(gen);
+        }
+
+        double cpu_end = double(clock()) / CLOCKS_PER_SEC;
 
         // CPU Monte Carlo Simulation
         double sum = 0.0;
-
-        double start = double(clock()) / CLOCKS_PER_SEC;
+        double monte_carlo_start = double(clock()) / CLOCKS_PER_SEC;
 
         for (size_t i = 0; i < N_PATHS; i++)
         {
@@ -72,8 +87,9 @@ int main()
         }
 
         sum /= N_PATHS;
-        double end = double(clock()) / CLOCKS_PER_SEC;
+        double monte_carlo_end = double(clock()) / CLOCKS_PER_SEC;
 
+        // Print Results
         cout << "****************** INFO ******************\n";
         cout << "Number of Paths: " << N_PATHS << "\n";
         cout << "Number of Steps: " << N_STEPS << "\n";
@@ -87,9 +103,12 @@ int main()
         cout << "****************** PRICE ******************\n";
         cout << "Option Price (CPU): " << sum << "\n";
         cout << "******************* TIME *****************\n";
-        cout << "CPU Monte Carlo Computation: " << (end - start) * 1e3 << " ms\n";
+        cout << "GPU Random Number Generation + Transfer: " << (gpu_end - gpu_start) * 1e3 << " ms\n";
+        cout << "CPU Random Number Generation: " << (cpu_end - cpu_start) * 1e3 << " ms\n";
+        cout << "CPU Monte Carlo Computation: " << (monte_carlo_end - monte_carlo_start) * 1e3 << " ms\n";
         cout << "******************* END *****************\n";
 
+        // Cleanup
         curandDestroyGenerator(curandGenerator);
     }
     catch (exception &e)

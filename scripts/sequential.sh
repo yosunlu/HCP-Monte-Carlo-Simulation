@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=openmp
+#SBATCH --job-name=sequential
 #SBATCH -p instruction
 #SBATCH --ntasks=1 --cpus-per-task=2
 #SBATCH --time=0-00:20:00
