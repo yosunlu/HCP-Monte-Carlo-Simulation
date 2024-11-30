@@ -41,8 +41,10 @@ int main()
         float sqrdt = sqrt(dt); // Used for generating random numbers
 
         // Generate arrays
-        vector<float> s(N_PATHS); // Host array
-        dev_array<float> d_s(N_PATHS);
+        vector<float> s(N_PATHS); // Host array for results
+        dev_array<float> d_s(N_PATHS);        // Device array for results
+        dev_array<float> d_s_shared(N_PATHS); // Device array for shared memory results
+
         dev_array<float> d_normals(N_NORMALS); // Array to store normally distributed random numbers
 
         // Create the CURAND generator
@@ -67,45 +69,81 @@ int main()
             N_STEPS,
             N_PATHS);
 
-        // Clean up temporary array
-        // No need to explicitly call the destructor; it will be called automatically when the variable goes out of scope
-        // Alternatively, you can reset the device memory if needed
+        // Clean up temporary array (optional)
         // d_normals_temp.clear();
 
+        // Ensure CUDA calls have finished
+        cudaDeviceSynchronize();
+
         // Set up CUDA events for timing
-        cudaEvent_t start, stop;
-        cudaEventCreate(&start);
-        cudaEventCreate(&stop);
+        cudaEvent_t start1, stop1, start2, stop2;
+        cudaEventCreate(&start1);
+        cudaEventCreate(&stop1);
+        cudaEventCreate(&start2);
+        cudaEventCreate(&stop2);
 
-        // Start the clock
-        cudaEventRecord(start);
+        // ================================
+        // Run mc_dao_call (Original Kernel)
+        // ================================
+        // Start timing for mc_dao_call
+        cudaEventRecord(start1);
 
-        // Launch the kernel
-        const unsigned BLOCK_SIZE = 128; // Adjust as needed
-        const unsigned GRID_SIZE = (N_PATHS + BLOCK_SIZE - 1) / BLOCK_SIZE;
-        mc_dao_call_shared(
+        // Launch the original kernel
+        mc_dao_call(
             d_s.getData(), T, K, B, S0, sigma, mu, r, dt,
             d_normals.getData(), N_STEPS, N_PATHS);
 
-        // Stop timing
-        cudaEventRecord(stop);
-        cudaEventSynchronize(stop);
+        // Stop timing for mc_dao_call
+        cudaEventRecord(stop1);
+        cudaEventSynchronize(stop1);
 
-        // Get elapsed time
-        float ms;
-        cudaEventElapsedTime(&ms, start, stop);
+        // Get elapsed time for mc_dao_call
+        float ms1;
+        cudaEventElapsedTime(&ms1, start1, stop1);
+
+        // ================================
+        // Run mc_dao_call_shared (Optimized Kernel)
+        // ================================
+        // Start timing for mc_dao_call_shared
+        cudaEventRecord(start2);
+
+        // Launch the optimized kernel
+        mc_dao_call_shared(
+            d_s_shared.getData(), T, K, B, S0, sigma, mu, r, dt,
+            d_normals.getData(), N_STEPS, N_PATHS);
+
+        // Stop timing for mc_dao_call_shared
+        cudaEventRecord(stop2);
+        cudaEventSynchronize(stop2);
+
+        // Get elapsed time for mc_dao_call_shared
+        float ms2;
+        cudaEventElapsedTime(&ms2, start2, stop2);
+
+        // Copy results from device to host
+        vector<float> s_shared(N_PATHS); // Host array for shared memory results
 
         // Copy results from device to host
         d_s.get(&s[0], N_PATHS);
+        d_s_shared.get(&s_shared[0], N_PATHS);
 
-        // Compute the payoff average
-        double temp_sum = 0.0;
-        #pragma omp parallel for reduction(+:temp_sum)
+        // Compute the payoff average for mc_dao_call
+        double temp_sum1 = 0.0;
+        #pragma omp parallel for reduction(+:temp_sum1)
         for (int i = 0; i < N_PATHS; i++)
         {
-            temp_sum += s[i];
+            temp_sum1 += s[i];
         }
-        temp_sum /= N_PATHS;
+        temp_sum1 /= N_PATHS;
+
+        // Compute the payoff average for mc_dao_call_shared
+        double temp_sum2 = 0.0;
+        #pragma omp parallel for reduction(+:temp_sum2)
+        for (int i = 0; i < N_PATHS; i++)
+        {
+            temp_sum2 += s_shared[i];
+        }
+        temp_sum2 /= N_PATHS;
 
         // Output results
         cout << "****************** INFO ******************\n";
@@ -118,11 +156,19 @@ int main()
         cout << "Risk-free Interest Rate: " << r * 100 << "%\n";
         cout << "Annual drift: " << mu * 100 << "%\n";
         cout << "Volatility: " << sigma * 100 << "%\n";
-        cout << "****************** PRICE *****************\n";
-        cout << "Option Price (GPU): " << temp_sum << "\n";
-        cout << "******************* TIME *****************\n";
-        cout << "GPU Monte Carlo Computation: " << ms << " ms\n";
+        cout << "************** PRICE COMPARISON **************\n";
+        cout << "Option Price (GPU - Original Kernel): " << temp_sum1 << "\n";
+        cout << "Option Price (GPU - Optimized Kernel): " << temp_sum2 << "\n";
+        cout << "************** TIME COMPARISON ***************\n";
+        cout << "GPU Computation Time (Original Kernel): " << ms1 << " ms\n";
+        cout << "GPU Computation Time (Optimized Kernel): " << ms2 << " ms\n";
         cout << "******************* END *****************\n";
+
+        // Destroy CUDA events
+        cudaEventDestroy(start1);
+        cudaEventDestroy(stop1);
+        cudaEventDestroy(start2);
+        cudaEventDestroy(stop2);
 
         // Destroy generator
         curandDestroyGenerator(curandGenerator);

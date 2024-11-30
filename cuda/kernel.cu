@@ -56,7 +56,7 @@ void mc_dao_call(
     unsigned N_STEPS,
     unsigned N_PATHS)
 {
-    const unsigned BLOCK_SIZE = 32;
+    const unsigned BLOCK_SIZE = 1024;
     const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
     mc_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(
         d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);
@@ -88,7 +88,6 @@ __global__ void mc_kernel_shared(
 
         for (unsigned step = 0; step < N_STEPS && s_curr > B; ++step)
         {
-            // Coalesced access
             float rand_num = d_normals[step * N_PATHS + s_idx];
             s_curr += mu * s_curr * dt + sigma * s_curr * rand_num;
         }
@@ -112,7 +111,7 @@ void mc_dao_call_shared(
     unsigned N_STEPS,
     unsigned N_PATHS)
 {
-    const unsigned BLOCK_SIZE = 128; // Adjusted for better GPU utilization
+    const unsigned BLOCK_SIZE = 1024; // Adjusted for better GPU utilization
     const unsigned GRID_SIZE = (N_PATHS + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
     mc_kernel_shared<<<GRID_SIZE, BLOCK_SIZE>>>(
@@ -133,7 +132,7 @@ __global__ void rearrange_random_numbers(
         unsigned path = idx / N_STEPS;
         unsigned step = idx % N_STEPS;
 
-        // Calculate new index for coalesced access
+
         unsigned new_idx = step * N_PATHS + path;
         d_normals_dst[new_idx] = d_normals_src[idx];
     }
