@@ -33,8 +33,8 @@ int main()
         float dt = float(T) / float(N_STEPS); // amount of time elapsing at each step
         float sqrdt = sqrt(dt);
 
-        // GPU: Generate random numbers and measure time (including transfer)
-        double gpu_start = double(clock()) / CLOCKS_PER_SEC;
+        // GPU: Generate random numbers
+        double gpu_gen_start = double(clock()) / CLOCKS_PER_SEC;
 
         dev_array<float> d_normals(N_NORMALS); // Array on GPU
 
@@ -43,11 +43,15 @@ int main()
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL);
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt);
 
-        // Copy the random numbers from GPU to CPU
+        double gpu_gen_end = double(clock()) / CLOCKS_PER_SEC;
+
+        // Transfer random numbers from GPU to CPU
+        double gpu_transfer_start = double(clock()) / CLOCKS_PER_SEC;
+
         vector<float> normals(N_NORMALS);
         d_normals.get(&normals[0], N_NORMALS);
 
-        double gpu_end = double(clock()) / CLOCKS_PER_SEC;
+        double gpu_transfer_end = double(clock()) / CLOCKS_PER_SEC;
 
         // CPU: Generate random numbers
         double cpu_start = double(clock()) / CLOCKS_PER_SEC;
@@ -103,7 +107,8 @@ int main()
         cout << "****************** PRICE ******************\n";
         cout << "Option Price (CPU): " << sum << "\n";
         cout << "******************* TIME *****************\n";
-        cout << "GPU Random Number Generation + Transfer: " << (gpu_end - gpu_start) * 1e3 << " ms\n";
+        cout << "GPU Random Number Generation: " << (gpu_gen_end - gpu_gen_start) * 1e3 << " ms\n";
+        cout << "GPU Data Transfer to CPU: " << (gpu_transfer_end - gpu_transfer_start) * 1e3 << " ms\n";
         cout << "CPU Random Number Generation: " << (cpu_end - cpu_start) * 1e3 << " ms\n";
         cout << "CPU Monte Carlo Computation: " << (monte_carlo_end - monte_carlo_start) * 1e3 << " ms\n";
         cout << "******************* END *****************\n";
