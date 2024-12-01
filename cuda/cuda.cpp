@@ -50,7 +50,7 @@ int main()
         // Set up CUDA events for timing
         cudaEvent_t start_generate, end_generate;
         cudaEventCreate(&start_generate);
-        cudaEventCreate(&stop_generate);
+        cudaEventCreate(&end_generate);
 
         // start the clock 
         cudaEventRecord(start_generate);
