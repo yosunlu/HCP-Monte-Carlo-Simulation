@@ -16,3 +16,5 @@ module load gcc/9.4.0
 
 nvcc -o barrier_option_pricing_openmp ./openmp/openmp.cpp -lcurand -Xcompiler -fopenmp
 ./barrier_option_pricing_openmp
+
+rm barrier_option_pricing_openmp

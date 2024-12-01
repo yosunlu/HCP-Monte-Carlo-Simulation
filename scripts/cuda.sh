@@ -17,3 +17,5 @@ nvidia-smi
 
 nvcc -o barrier_option_pricing_cuda ./cuda/cuda.cpp ./cuda/kernel.cu -lcurand -Xcompiler -fopenmp
 ./barrier_option_pricing_cuda 
+
+rm barrier_option_pricing_cuda

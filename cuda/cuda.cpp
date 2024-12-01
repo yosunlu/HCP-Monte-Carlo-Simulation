@@ -47,13 +47,24 @@ int main()
         dev_array<float> d_s(N_PATHS);
         dev_array<float> d_normals(N_NORMALS); // array to store normally distributed random numbers
 
+        // Set up CUDA events for timing
+        cudaEvent_t start_generate, end_generate;
+        cudaEventCreate(&start_generate);
+        cudaEventCreate(&stop_generate);
+
+        // start the clock 
+        cudaEventRecord(start_generate);
+
         // generate random numbers
         curandGenerator_t curandGenerator;
         curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm
         curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL); // seed for the generator
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt); //  generate normally distributed random numbers, using Brownian motion
 
-        // Set up CUDA events for timing
+        // End the clock
+        cudaEventRecord(end_generate);
+        cudaEventSynchronize(end_generate);
+        
         cudaEvent_t start, stop;
         cudaEventCreate(&start);
         cudaEventCreate(&stop);
@@ -69,14 +80,15 @@ int main()
         cudaEventSynchronize(stop);
 
         // Get the elapsed time in milliseconds
-        float ms;
+        float ms, ms_numGen;
+        cudaEventElapsedTime(&ms_numGen, start_generate, end_generate);
         cudaEventElapsedTime(&ms, start, stop);
 
         // Copy results from device to host
         d_s.get(&s[0], N_PATHS);
 
         // compute the payoff average
-        double temp_sum = 0.0;
+        float temp_sum = 0.0;
         for (size_t i = 0; i < N_PATHS; i++)
         {
             temp_sum += s[i];
@@ -97,6 +109,7 @@ int main()
         cout << "****************** PRICE *****************\n";
         cout << "Option Price (GPU): " << temp_sum << "\n";
         cout << "******************* TIME *****************\n";
+        cout << "GPU Random Number Generation " << ms_numGen << " ms\n";
         cout << "GPU Monte Carlo Computation: " << ms << " ms\n";
         cout << "******************* END *****************\n";
 
