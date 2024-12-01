@@ -66,6 +66,7 @@ int main()
             cpu_normals[i] = dist(gen);
         }
 
+        
         double cpu_end = double(clock()) / CLOCKS_PER_SEC;
 
         // CPU Monte Carlo Simulation
@@ -90,7 +91,7 @@ int main()
             sum += exp(-r * T) * payoff;
         }
 
-        sum /= N_PATHS;
+        sum /= N_PATHS; 
         double monte_carlo_end = double(clock()) / CLOCKS_PER_SEC;
 
         // Print Results

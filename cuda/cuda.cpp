@@ -10,7 +10,6 @@
 #include <cstdlib>
 #include <omp.h> // Include OpenMP header
 
-
 using namespace std;
 
 int main()
@@ -18,7 +17,7 @@ int main()
     try
     {
 
-    cudaDeviceProp prop;
+        cudaDeviceProp prop;
         cudaGetDeviceProperties(&prop, 0);
         std::cout << "Shared Memory Per Block: " << prop.sharedMemPerBlock << " bytes" << std::endl;
         std::cout << "Shared Memory Per SM: " << prop.sharedMemPerMultiprocessor << " bytes" << std::endl;
@@ -52,28 +51,29 @@ int main()
         cudaEventCreate(&start_generate);
         cudaEventCreate(&end_generate);
 
-        // start the clock 
+        // start the clock
         cudaEventRecord(start_generate);
 
         // generate random numbers
         curandGenerator_t curandGenerator;
-        curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32); // Mersenne Twister algorithm
-        curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL); // seed for the generator
+        curandCreateGenerator(&curandGenerator, CURAND_RNG_PSEUDO_MTGP32);                  // Mersenne Twister algorithm
+        curandSetPseudoRandomGeneratorSeed(curandGenerator, 1234ULL);                       // seed for the generator
         curandGenerateNormal(curandGenerator, d_normals.getData(), N_NORMALS, 0.0f, sqrdt); //  generate normally distributed random numbers, using Brownian motion
 
         // End the clock
         cudaEventRecord(end_generate);
         cudaEventSynchronize(end_generate);
-        
+
         cudaEvent_t start, stop;
         cudaEventCreate(&start);
         cudaEventCreate(&stop);
 
-        // start the clock 
+        // start the clock
         cudaEventRecord(start);
 
         // call the kernel
-        mc_dao_call_shared(d_s.getData(), T, K, B, S0, sigma, mu, r, dt, d_normals.getData(), N_STEPS, N_PATHS);
+        mc_dao_call(d_s.getData(), T, K, B, S0, sigma, mu, r, dt,
+                           d_normals.getData(), N_STEPS, N_PATHS);
 
         // End the clock
         cudaEventRecord(stop);
@@ -95,7 +95,6 @@ int main()
         }
         temp_sum /= N_PATHS;
 
-        
         cout << "****************** INFO ******************\n";
         cout << "Number of Paths: " << N_PATHS << "\n";
         cout << "Number of Steps: " << N_STEPS << "\n";

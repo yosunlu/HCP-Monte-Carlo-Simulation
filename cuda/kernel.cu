@@ -45,18 +45,18 @@ __global__ void mc_kernel(
 void mc_dao_call(
     float *d_s,
     float T,
-    float K,
-    float B,
-    float S0,
-    float sigma,
-    float mu,
-    float r,
-    float dt,
+    float K, // strike price
+    float B, // barrier price
+    float S0, // market price
+    float sigma, // expected volatility per year
+    float mu, // expected return per year
+    float r, // risk-free rate
+    float dt, // amount of time elapsing at each step
     float *d_normals,
     unsigned N_STEPS,
     unsigned N_PATHS)
 {
-    const unsigned BLOCK_SIZE = 32;
+    const unsigned BLOCK_SIZE = 16;
     const unsigned GRID_SIZE = ceil(float(N_PATHS) / float(BLOCK_SIZE));
     mc_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(
         d_s, T, K, B, S0, sigma, mu, r, dt, d_normals, N_STEPS, N_PATHS);

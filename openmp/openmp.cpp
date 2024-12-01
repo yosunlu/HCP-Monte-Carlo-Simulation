@@ -53,7 +53,7 @@ int main()
         double sum_openmp = 0.0;
         double start = double(clock()) / CLOCKS_PER_SEC;
 
-#pragma omp parallel for reduction(+ : sum_openmp)
+        #pragma omp parallel for reduction(+ : sum_openmp)
         for (int i = 0; i < N_PATHS; i++)
         {
             int n_idx = i * N_STEPS;
