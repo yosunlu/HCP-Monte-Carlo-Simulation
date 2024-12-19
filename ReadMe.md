@@ -70,9 +70,9 @@ cd HPC-Monte-Carlo-Simulation
 
 3. Run the scripts  
 ``
-make sequential
-make openmp
-make cuda
+make sequential  
+make openmp  
+make cuda  
 ``
 
 #### Reference:
