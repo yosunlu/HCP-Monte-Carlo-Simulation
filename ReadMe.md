@@ -62,13 +62,13 @@ This project highlights the power of parallel computing and CUDA optimizations i
   - GPU: NVIDIA RTX 4000 Ada
 
 ## 🧪How to Run on a Euler Machine
-1. Clone the repository
+1. Clone the repository  
 ``
 git clone https://github.com/yosunlu/HPC-Monte-Carlo-Simulation.git
 cd HPC-Monte-Carlo-Simulation
 ``
 
-2. Run the scripts
+3. Run the scripts  
 ``
 make sequential
 make openmp
